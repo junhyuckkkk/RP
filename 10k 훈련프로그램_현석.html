@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10km 57분 달성 러닝 훈련 프로그램</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #f5f5f5;
+            padding: 0;
+            margin: 0;
+            color: #333;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        .hero-section {
+            background-color: #4169E1;
+            color: white;
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+        .hero-section::after {
+            content: "";
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" opacity="0.1"><circle cx="50" cy="50" r="40" /></svg>');
+            background-size: 100px 100px;
+            background-repeat: repeat;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.15;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .hero-number {
+            font-size: 180px;
+            font-weight: 900;
+            line-height: 0.8;
+            opacity: 0.2;
+            position: absolute;
+            top: 0;
+            right: 10px;
+            z-index: 1;
+        }
+        .hero-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+        .hero-subtitle {
+            font-size: 16px;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background-color: white;
+            color: #4169E1;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+        .container {
+            padding: 0;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .stats-container {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .stats-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .stats-label::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 14px;
+            background-color: #4169E1;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        .label-text {
+            position: relative;
+            z-index: 1;
+        }
+        .label-text::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 6px;
+            background-color: rgba(65, 105, 225, 0.2);
+            z-index: -1;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 10px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .stat-unit {
+            font-size: 12px;
+            color: #777;
+            text-transform: uppercase;
+        }
+        .goal-container {
+            background-color: #f0f8ff;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .goal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .goal-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px;
+            background-color: white;
+            border-radius: 10px;
+            border: 1px solid rgba(65, 105, 225, 0.2);
+        }
+        .goal-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2E86C1;
+            margin-bottom: 5px;
+        }
+        .tab-container {
+            display: flex;
+            background-color: #f0f0f0;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tab-container::-webkit-scrollbar {
+            display: none;
+        }
+        .tab-button {
+            flex: 1;
+            min-width: 90px;
+            padding: 15px 0;
+            text-align: center;
+            background-color: transparent;
+            color: #333;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+            outline: none;
+            pointer-events: auto;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+        .tab-button.active {
+            background-color: #fff;
+            color: #2E86C1;
+            border-bottom: 3px solid #4169E1;
+            font-weight: 700;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .week-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 400;
+            color: #666;
+            margin-top: 3px;
+        }
+        .training-content {
+            display: none;
+            padding: 20px;
+        }
+        .training-content.active {
+            display: block;
+        }
+        .training-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 0;
+            margin-bottom: 20px;
+            border: 1px solid rgba(46, 134, 193, 0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .training-header {
+            background-color: white;
+            color: #333;
+            padding: 12px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(46, 134, 193, 0.2);
+        }
+        .training-title {
+            font-size: 18px;
+            font-weight: 700;
+            z-index: 1;
+        }
+        .training-body {
+            padding: 15px;
+        }
+        .training-section {
+            margin-bottom: 15px;
+        }
+        .training-section:last-child {
+            margin-bottom: 0;
+        }
+        .training-section-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .training-section-content {
+            background-color: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .training-main {
+            background-color: #f0f8ff;
+            font-weight: 500;
+            border-left: 3px solid #4169E1;
+        }
+        .tips-container {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .tips-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .tips-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: #2E86C1;
+            border-radius: 1.5px;
+        }
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .tip-number {
+            background-color: #2E86C1;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .tip-text {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .footer {
+            text-align: center;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            .training-cards-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .training-card {
+                margin-bottom: 0;
+            }
+            .hero-title {
+                font-size: 36px;
+            }
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            .hero-badge {
+                font-size: 14px;
+                padding: 6px 14px;
+            }
+            .hero-number {
+                font-size: 220px;
+            }
+            .hero-section {
+                height: 260px;
+            }
+            .stats-container, .goal-container {
+                padding: 25px;
+            }
+            .training-content {
+                padding: 30px;
+            }
+            .stat-value, .goal-value {
+                font-size: 28px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                height: 180px;
+            }
+            .hero-number {
+                font-size: 140px;
+            }
+            .hero-title {
+                font-size: 24px;
+            }
+            .hero-subtitle {
+                font-size: 14px;
+            }
+            .hero-badge {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+            .stats-grid, .goal-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .goal-stats .goal-card:last-child {
+                grid-column: span 2;
+            }
+            .stat-value, .goal-value {
+                font-size: 20px;
+            }
+            .training-title {
+                font-size: 16px;
+            }
+            .training-section-content {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <div class="hero-number">10KM</div>
+            <div class="hero-content">
+                <div class="hero-title">10km 57분 달성</div>
+                <div class="hero-subtitle">러닝 훈련 프로그램</div>
+                <div class="hero-badge">12주 완성</div>
+            </div>
+        </div>
+        
+        <!-- 현재 기록 -->
+        <div class="stats-container">
+            <div class="stats-label"><span class="label-text">현재 기록</span></div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">0.57</div>
+                    <div class="stat-unit">킬로미터</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">13'54"</div>
+                    <div class="stat-unit">페이스/km</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">07:57</div>
+                    <div class="stat-unit">총 시간</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">초보자</div>
+                    <div class="stat-unit">레벨</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 목표 -->
+        <div class="goal-container">
+            <div class="stats-label"><span class="label-text">목표</span></div>
+            <div class="goal-stats">
+                <div class="goal-card">
+                    <div class="goal-value">10</div>
+                    <div class="stat-unit">킬로미터</div>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-value">5'42"</div>
+                    <div class="stat-unit">페이스/km</div>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-value">57:00</div>
+                    <div class="stat-unit">총 시간</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 주차 선택 탭 -->
+        <div class="tab-container">
+            <button class="tab-button active" data-week="1">
+                1-3<span class="week-label">주차</span>
+            </button>
+            <button class="tab-button" data-week="4">
+                4-6<span class="week-label">주차</span>
+            </button>
+            <button class="tab-button" data-week="7">
+                7-9<span class="week-label">주차</span>
+            </button>
+            <button class="tab-button" data-week="10">
+                10-12<span class="week-label">주차</span>
+            </button>
+        </div>
+        
+        <!-- 훈련 내용 -->
+        <div class="training-content active" data-week="1">
+            <div class="training-cards-container">
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">1일차: 기초 체력 구축</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">5분 빠른 걷기</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main">2km 조깅 (8:30/km 페이스)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">5분 걷기, 가벼운 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">2일차: 인터벌 훈련 입문</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">5분 빠른 걷기, 5분 조깅</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main">200m 빠르게(7:30/km) → 200m 걷기 (5세트)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">5분 걷기, 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="training-content" data-week="4">
+            <div class="training-cards-container">
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">1일차: 거리 늘리기</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">5분 빠른 걷기, 5분 조깅</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main">4km 편안한 페이스(7:30/km)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">5분 걷기, 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">2일차: 템포 런</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">10분 조깅(7:00/km)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main">2.5km 빠른 페이스(6:30/km)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">5분 걷기, 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="training-content" data-week="7">
+            <div class="training-cards-container">
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">1일차: 장거리 적응</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">5분 빠른 걷기, 5분 조깅</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main">6km 일정 페이스(6:20/km)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">5분 걷기, 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">2일차: 피라미드 인터벌</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">10분 조깅(7:00/km)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main" style="white-space: pre-line">400m 빠르게(6:00/km) → 200m 걷기
+600m 빠르게(6:10/km) → 300m 걷기
+800m 빠르게(6:20/km) → 400m 걷기
+600m 빠르게(6:10/km) → 300m 걷기
+400m 빠르게(6:00/km) → 200m 걷기</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">5분 걷기, 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="training-content" data-week="10">
+            <div class="training-cards-container">
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">1일차: 레이스 시뮬레이션</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">10분 점진적 조깅</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main">8km 목표 페이스(5:42/km)로 달리기</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">10분 걷기, 충분한 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="training-card">
+                    <div class="training-header">
+                        <div class="training-title">2일차: 최종 목표 테스트</div>
+                    </div>
+                    <div class="training-body">
+                        <div class="training-section">
+                            <div class="training-section-label">워밍업</div>
+                            <div class="training-section-content">10분 조깅(6:30/km)</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">메인</div>
+                            <div class="training-section-content training-main">10km 목표 페이스(5:42/km) 완주 시도</div>
+                        </div>
+                        <div class="training-section">
+                            <div class="training-section-label">쿨다운</div>
+                            <div class="training-section-content">10분 걷기, 충분한 스트레칭</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 훈련 팁 -->
+        <div class="tips-container">
+            <div class="tips-title">훈련 성공을 위한 팁</div>
+            <div>
+                <div class="tip-item">
+                    <div class="tip-number">1</div>
+                    <div class="tip-text">처음에는 거리보다 꾸준함에 집중하세요. 주 3회 이상 러닝을 습관화하는 것이 중요합니다.</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">2</div>
+                    <div class="tip-text">러닝 전후 5-10분 스트레칭은 부상 예방에 필수적입니다.</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">3</div>
+                    <div class="tip-text">점진적으로 거리를 늘리되, 매주 총 거리를 10% 이상 늘리지 마세요.</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">4</div>
+                    <div class="tip-text">훈련 중 호흡에 집중하고 일정한 호흡 패턴을 유지하세요(2-3걸음 들이마시고, 2-3걸음 내쉬기).</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">5</div>
+                    <div class="tip-text">장거리 러닝 날에는 충분한 수분과 간단한 탄수화물을 섭취하세요.</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">6</div>
+                    <div class="tip-text">스마트워치나 러닝 앱으로 페이스를 확인하며 일정한 속도를 유지하는 연습을 하세요.</div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">7</div>
+                    <div class="tip-text">주 1-2회는 하체 근력 훈련을 병행하면 러닝 효율이 크게 향상됩니다.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            이 프로그램은 현재 기록에서 시작하여 12주 동안 점진적으로 거리와 강도를 높여 10km를 57분 내에 완주할 수 있도록 설계되었습니다. 꾸준한 훈련과 충분한 휴식을 통해 목표를 달성하세요!
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const trainingContents = document.querySelectorAll('.training-content');
+
+            // 탭 클릭 이벤트 처리
+            function activateTab(weekNumber) {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                trainingContents.forEach(content => content.classList.remove('active'));
+
+                const activeButton = document.querySelector(`.tab-button[data-week="${weekNumber}"]`);
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                    const tabContainer = document.querySelector('.tab-container');
+                    tabContainer.scrollLeft = activeButton.offsetLeft - tabContainer.offsetWidth / 2 + activeButton.offsetWidth / 2;
+                }
+
+                const activeContent = document.querySelector(`.training-content[data-week="${weekNumber}"]`);
+                if (activeContent) {
+                    activeContent.classList.add('active');
+                }
+            }
+
+            // 각 탭 버튼에 이벤트 리스너 추가
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const weekNumber = this.getAttribute('data-week');
+                    activateTab(weekNumber);
+                });
+
+                // 터치 이벤트
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    const weekNumber = this.getAttribute('data-week');
+                    activateTab(weekNumber);
+                }, { passive: false });
+            });
+
+            // 초기 렌더링
+            const weekNumbers = Array.from(tabButtons).map(btn => btn.getAttribute('data-week'));
+            const initialWeek = weekNumbers[0];
+            activateTab(initialWeek);
+        });
+    </script>
+</body>
+</html>
